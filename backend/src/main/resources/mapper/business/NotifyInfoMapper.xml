@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fank.f1k2.business.dao.NotifyInfoMapper">
+
+    <!-- 分页获取消息通知 -->
+    <select id="queryPage" resultType="java.util.LinkedHashMap">
+        select
+        ni.id,
+        ni.content,
+        ni.status,
+        ni.user_id,
+        ni.create_date,
+        ni.finish_date,
+        ni.del_flag,
+
+        si.code as userCode,
+        si.name as userName,
+        si.phone,
+        si.images as userImages
+        from
+        notify_info ni
+        left join user_info si on (si.id = ni.user_id )
+        where
+        1 = 1
+        AND ni.del_flag = 0
+        <if test="queryForm.name != null and queryForm.name != ''">
+            AND si.name like CONCAT("%",#{queryForm.name},"%")
+        </if>
+        <if test="queryForm.status != null and queryForm.status != ''">
+            AND ni.status = #{queryForm.status}
+        </if>
+        <if test="queryForm.userId != null and queryForm.userId != ''">
+            AND si.user_id = #{queryForm.userId}
+        </if>
+        order by
+        ni.create_date desc
+    </select>
+</mapper>
